@@ -3,547 +3,683 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Big Espetos - Lanches e Pedidos</title>
+  <title>Pit Stop Espetu's - Cardápio Digital</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="description" content="Big Espetos - Desde 2015, os melhores espetos da cidade" />
-  <meta property="og:title" content="Big Espetos" />
+  <meta property="og:title" content="Pit Stop Espetu's" />
   <meta property="og:description" content="Desde 2015, os melhores espetos da cidade" />
   <meta property="og:type" content="website" />
-  <!-- Firebase Configuration -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAJ5SxiDvyGCoaqhsMUhWPr2o70V4u5ads",
-      authDomain: "pit-stop-espetos.firebaseapp.com",
-      projectId: "pit-stop-espetos",
-      storageBucket: "pit-stop-espetos.firebasestorage.app",
-      messagingSenderId: "701782808700",
-      appId: "1:701782808700:web:d22de85c2f0227f0d411f9"
-    };
-    
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    
-    document.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const doc = await db.collection('configuracoes').doc('loja').get();
-        if (doc.exists) {
-          const config = doc.data();
-          
-          // Apply configuration
-          if (config.nomeLoja) {
-            document.title = config.nomeLoja;
-          }
-          if (config.corPrincipal) {
-            document.documentElement.style.setProperty('--primary', config.corPrincipal);
-          }
-          if (config.corSecundaria) {
-            document.documentElement.style.setProperty('--secondary', config.corSecundaria);
-          }
-          if (config.metaDescricao) {
-            const metaDesc = document.querySelector('meta[name="description"]');
-            if (metaDesc) metaDesc.setAttribute('content', config.metaDescricao);
-          }
-        }
-      } catch (error) {
-        console.error('Erro ao carregar configurações:', error);
-      }
-    });
-  </script>
+  
+  <!-- Fonts Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rockwell+One&family=Alfa+Slab+One&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <!-- Font Awesome para ícones -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
   <style>
+    /* --- VARIÁVEIS CSS --- */
     :root {
-      --primary: #8b4513;
-      --primary-light: #a0522d;
-      --secondary: #d2b48c;
-      --accent: #ff dead; /* cor que já vi no site */
-      --dark: #1a1a1a;
-      --light: #f5f0e8;
-      --text: #333;
-      --text-light: #666;
+      --bg-creme: #F5EFE6;
+      --bg-verde-escuro: #18221D;
+      --bg-destaque: #EAB338;
+      --bg-amarelo-mostarda: #E5AE32;
+      --cor-terracota: #A84A28;
+      --cor-marmore-borda: #1B2420;
+      --texto-cinza-escuro: #333333;
+      --texto-branco: #FFFFFF;
+      --texto-circulo-vermelho: #FF4D4D;
+      --divisor-quadriculado-1: #A84A28;
+      --divisor-quadriculado-2: #EAB338;
     }
-
+    
+    /* --- RESET E BASE --- */
     * {
       box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-      background-color: var(--dark);
-      color: var(--text);
       margin: 0;
       padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-creme);
+      color: var(--texto-cinza-escuro);
       min-height: 100vh;
+      line-height: 1.5;
     }
-
+    
+    h1, h2, h3, .display-1, .display-2, .display-3, .display-4 {
+      font-family: 'Rockwell One', sans-serif;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+    
+    .fonte-manuscrita {
+      font-family: 'Alfa Slab One', cursive;
+    }
+    
+    .fonte-inter {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    /* --- ESCALAS DE TAMANHO --- */
+    .h1 { font-size: 2.5rem; }
+    .h2 { font-size: 2rem; }
+    .h3 { font-size: 1.75rem; }
+    .h4 { font-size: 1.5rem; }
+    .fonte-grande { font-size: 1.25rem; }
+    .fonte-mediana { font-size: 1rem; }
+    .fonte-pequena { font-size: 0.875rem; }
+    
+    /* --- UTILIDADES --- */
     .container {
-      max-width: 1200px;
+      max-width: 100%;
+      padding: 0 1rem;
       margin: 0 auto;
-      padding: 0 20px;
     }
-
-    /* Header */
-    header {
-      background: var(--primary);
-      padding: 1rem 0;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 100;
+    
+    .btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.4rem;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: 'Inter', sans-serif;
     }
-
-    .header-content {
+    
+    .btn:focus-visible {
+      outline: 2px solid var(--bg-destaque);
+      outline-offset: 2px;
+    }
+    
+    .text-center { text-align: center; }
+    .text-left { text-align: left; }
+    .text-right { text-align: right; }
+    
+    .mb-1 { margin-bottom: 0.5rem; }
+    .mb-2 { margin-bottom: 1rem; }
+    .mb-3 { margin-bottom: 1.5rem; }
+    .mb-4 { margin-bottom: 2rem; }
+    .mt-1 { margin-top: 0.5rem; }
+    .mt-2 { margin-top: 1rem; }
+    .mt-3 { margin-top: 1.5rem; }
+    .mt-4 { margin-top: 2rem; }
+    
+    .grid-col-1 { grid-template-columns: 1fr; }
+    @media (min-width: 640px) {
+      .grid-col-1 { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    .invisible { display: none; }
+    .visible { display: block; }
+    
+    /* --- FOCUS VISIBLE --- */
+    .focus-visible:focus-visible {
+      outline: 2px solid var(--bg-destaque);
+      outline-offset: 2px;
+    }
+    
+    /* --- 1. CABEÇALHO / HERO BANNER --- */
+    .hero-banner {
+      position: relative;
+      background: url('https://i.ibb.co/XyZabc/night-environment.jpg') center/cover no-repeat;
+      background-color: var(--bg-verde-escuro);
+      clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+      padding-top: 6rem;
+      padding-bottom: 3rem;
+      text-align: center;
+    }
+    
+    .hero-banner::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 0.15rem;
+      background: linear-gradient(90deg, var(--divisor-quadriculado-1) 0%, var(--divisor-quadriculado-2) 50%, var(--divisor-quadriculado-1) 100%);
+    }
+    
+    .hero-banner .container {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .hero-banner h1 {
+      color: var(--texto-branco);
+      font-size: 3rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      margin-bottom: 1rem;
+    }
+    
+    .hero-banner .fonte-manuscrita {
+      font-style: italic;
+      color: var(--bg-destaque);
+      font-size: 1.5rem;
+      letter-spacing: 0.1em;
+    }
+    
+    .hero-banner .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--texto-circulo-vermelho);
+      color: var(--texto-branco);
+      padding: 0.4rem 0.8rem;
+      border-radius: 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-top: 1rem;
+    }
+    
+    .hero-banner .status-badge .circulo {
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+      background: var(--texto-branco);
+    }
+    
+    /* --- 2. QUADRO DE DESTAQUES / LOUSA --- */
+    .lousa-destaques {
+      background: var(--bg-verde-escuro);
+      border: 0.3rem solid var(--cor-marmore-borda);
+      border-radius: 1rem;
+      padding: 2rem 1.5rem;
+      margin: 3rem 0;
+    }
+    
+    .lousa-destaques::before {
+      content: 'HOJE NO PIT STOP';
+      display: block;
+      position: absolute;
+      top: 0.5rem;
+      left: 1rem;
+      background: var(--bg-destaque);
+      color: var(--bg-verde-escuro);
+      padding: 0.3rem 0.6rem;
+      border-radius: 0 1rem 0 0;
+      font-family: 'Rockwell One', sans-serif;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .lousa-destaques .item-destaque {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 0.8rem 0;
+      border-bottom: 0.05rem solid rgba(255, 255, 255, 0.1);
     }
-
-    .logo {
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: var(--light);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .logo i {
-      color: var(--accent);
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
-
-    .nav-links a {
-      color: var(--light);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: var(--accent);
-    }
-
-    .btn-login {
-      background: var(--accent);
-      color: var(--dark);
-      padding: 0.5rem 1rem;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.3s;
-    }
-
-    .btn-login:hover {
-      background: #ffc107;
-    }
-
-    /* Hero Section */
-    .hero {
-      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.imgur.com/original.jpg') center/cover no-fixed;
-      height: 60vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      margin-top: 60px;
-      padding: 0 20px;
-    }
-
-    .hero h1 {
-      font-size: 3.5rem;
-      color: var(--light);
-      margin-bottom: 1rem;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .hero p {
-      font-size: 1.3rem;
-      color: var(--text-light);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* Categorias/Sections */
-    .section {
-      padding: 4rem 0;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 3rem;
-    }
-
-    .section-title h2 {
-      font-size: 2.5rem;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-    }
-
-    .section-title p {
-      color: var(--text-light);
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .categories-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .category-card {
-      background: #2a2a2a;
-      border-radius: 10px;
-      padding: 2rem;
-      text-decoration: none;
-      color: var(--text);
-      transition: transform 0.3s, background 0.3s;
-    }
-
-    .category-card:hover {
-      transform: translateY(-5px);
-      background: #3a3a3a;
-    }
-
-    .category-card i {
-      font-size: 2rem;
-      color: var(--accent);
-      margin-bottom: 1rem;
-      display: block;
-    }
-
-    .category-card h3 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .category-card p {
-      font-size: 0.9rem;
-      color: var(--text-light);
-    }
-
-    /* Produtos */
-    .products {
-      background: var(--dark);
-    }
-
-    .product-card {
-      background: #252525;
-      border-radius: 8px;
-      overflow: hidden;
-      margin-bottom: 1.5rem;
-      transition: transform 0.3s;
-    }
-
-    .product-card:hover {
-      transform: translateY(-3px);
-    }
-
-    .product-image {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      background: #333;
-    }
-
-    .product-info {
-      padding: 1rem;
-    }
-
-    .product-info h3 {
+    
+    .lousa-destaques .item-nome {
+      color: var(--texto-branco);
+      font-family: 'Alfa Slab One', cursive;
       font-size: 1rem;
-      margin-bottom: 0.25rem;
     }
-
-    .product-info .price {
-      color: var(--accent);
-      font-weight: bold;
-      font-size: 1.1rem;
+    
+    .lousa-destaques .item-preco {
+      color: var(--bg-destaque);
+      font-family: 'Alfa Slab One', cursive;
+      font-size: 1rem;
     }
-
-    .product-info .old-price {
-      color: var(--text-light);
-      font-size: 0.8rem;
-      text-decoration: line-through;
-      margin-right: 0.5rem;
+    
+    /* --- 3. BARRA DE NAVEGAÇÃO / CATEGORIAS --- */
+    .categorias-carrossel {
+      overflow-x: auto;
+      padding: 1rem 0;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
     }
-
-    /* Promoções */
-    .promo {
-      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-      color: white;
-      padding: 2rem;
-      text-align: center;
-      border-radius: 10px;
-      margin: 2rem 0;
+    
+    .categorias-carrossel::-webkit-scrollbar {
+      display: none;
     }
-
-    .promo h3 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+    
+    .categorias-nav {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-creme);
+      border-radius: 2rem;
+      padding: 0.25rem;
     }
-
-    .promo p {
-      font-size: 1.1rem;
-      opacity: 0.9;
+    
+    .categorias-nav .btn {
+      flex: 1;
+      border: 1px solid var(--bg-verde-escuro);
+      color: var(--bg-verde-escuro);
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.6rem 1rem;
     }
-
-    /* Footer */
-    footer {
-      background: #111;
-      color: #aaa;
-      padding: 3rem 0 1rem;
+    
+    .categorias-nav .btn.active,
+    .categorias-nav .btn:hover {
+      background: var(--bg-destaque);
+      color: var(--bg-creme);
+      border-color: var(--bg-destaque);
     }
-
-    .footer-content {
+    
+    /* --- 4. LISTAGEM DE PRODUTOS --- */
+    .section-produtos {
+      margin: 4rem 0;
+    }
+    
+    .section-produtos .subtitulo {
+      color: var(--bg-verde-escuro);
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding-bottom: 0.5rem;
+    }
+    
+    .section-produtos .divisoria {
+      width: 100%;
+      height: 0.05rem;
+      background: var(--bg-creme);
+      margin: 1rem 0;
+    }
+    
+    .product-card {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2rem;
+      grid-template-columns: minmax(5rem, 3rem) 1fr minmax(6rem, 4rem);
+      gap: 0.75rem;
+      align-items: start;
+      padding: 1rem 0;
+      border-bottom: 0.05rem solid rgba(0, 0, 0, 0.05);
     }
-
-    .footer-section h4 {
-      color: var(--light);
+    
+    .product-card img {
+      width: 5rem;
+      height: 5rem;
+      border-radius: 0.4rem;
+      object-fit: cover;
+      background: var(--bg-creme);
+      justify-self: center;
+    }
+    
+    .product-card .product-nome {
+      grid-column: 2;
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--bg-verde-escuro);
+      margin-bottom: 0.2rem;
+    }
+    
+    .product-card .product-preco {
+      grid-column: 3;
+      color: var(--cor-terracota);
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 0.875rem;
+    }
+    
+    .product-card .product-add {
+      grid-column: 3;
+      background: var(--bg-destaque);
+      color: var(--bg-verde-escuro);
+      border: none;
+      border-radius: 0.4rem;
+      padding: 0.3rem 0.5rem;
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    /* --- 5. CHECKOUT / CARRINHO --- */
+    .checkout-section {
+      background: var(--bg-creme);
+      padding: 2rem 1rem;
+      margin: 3rem 0;
+    }
+    
+    .checkout-section h2 {
+      color: var(--bg-verde-escuro);
+      font-family: 'Rockwell One', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1.5rem;
+    }
+    
+    .checkout-form .form-group {
       margin-bottom: 1rem;
     }
-
-    .footer-section ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .footer-section li {
+    
+    .checkout-form label {
+      display: block;
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05rem;
       margin-bottom: 0.5rem;
     }
-
-    .footer-section a {
-      color: #777;
-      text-decoration: none;
-      transition: color 0.3s;
+    
+    .checkout-form input,
+    .checkout-form select,
+    .checkout-form textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 0.4rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      background: var(--bg-creme);
+      color: var(--texto-cinza-escuro);
     }
-
-    .footer-section a:hover {
-      color: var(--accent);
+    
+    .checkout-form select {
+      appearance: none;
+      background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7.24.74a.5.5 0 01.698.698L10.5 7.5l-2.75 2.75a.5.5 0 01-.708-.708L7.5 9.79l-2.75 2.75a.5.5 0 01-.698-.698L5.5 7.5l2.75-2.75a.5.5 0 01.698-.698l2.75 2.75z"/><svg/>
+    </svg>');
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      padding-right: 2.5rem;
     }
-
-    .footer-bottom {
-      border-top: 1px solid #222;
-      padding-top: 2rem;
-      text-align: center;
-      margin-top: 2rem;
-      font-size: 0.9rem;
+    
+    .checkout-form textarea {
+      min-height: 3rem;
+      resize: vertical;
     }
-
-    /* Mobile Menu */
-    .mobile-menu-btn {
-      display: none;
-      background: none;
-      border: none;
-      color: var(--light);
-      font-size: 1.5rem;
+    
+    .checkout-form .opcao-pagamento {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .checkout-form .opcao-pagamento label {
+      flex: 1;
+      padding: 0.75rem;
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 0.4rem;
       cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-creme);
     }
-
-    @media (max-width: 768px) {
-      .nav-links {
-        display: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        background: var(--primary);
-        flex-direction: column;
-        padding: 1rem;
-      }
-
-      .nav-links.active {
-        display: flex;
-      }
-
-      .mobile-menu-btn {
-        display: block;
-      }
-
-      .hero h1 {
-        font-size: 2.5rem;
-      }
+    
+    .checkout-form .opcao-pagamento label:hover {
+      background: #e2e2e2;
+    }
+    
+    .checkout-form .opcao-pagamento input[type="radio"] {
+      display: none;
+    }
+    
+    .checkout-resumo {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 0.05rem solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .checkout-resumo .item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-family: 'Inter', sans-serif;
+    }
+    
+    .checkout-resumo .total {
+      font-weight: 600;
+      padding-top: 1rem;
+      border-top: 0.05rem solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .checkout-resumo .btn-finalizar {
+      width: 100%;
+      padding: 1rem;
+      background: var(--bg-destaque);
+      color: var(--bg-verde-escuro);
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    
+    /* --- 5. RODAPÉ / INSTITUCIONAL --- */
+    .rodape {
+      background: var(--bg-creme);
+      padding: 2rem 1rem;
+      margin-top: 4rem;
+    }
+    
+    .rodape .info {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--texto-cinza-escuro);
+    }
+    
+    .rodape .info a {
+      color: var(--bg-destaque);
+      text-decoration: none;
+    }
+    
+    .rodape .login-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-destaque);
+      color: var(--bg-verde-escuro);
+      font-family: 'Rockwell One', sans-serif;
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05rem;
+    }
+    
+    /* --- RESPONSIVIDADE --- */
+    @media (max-width: 360px) {
+      .hero-banner h1 { font-size: 2rem; }
+      .hero-banner .fonte-manuscrita { font-size: 1.2rem; }
+      .lousa-destaques { padding: 1.5rem 1rem; }
     }
   </style>
 </head>
+
 <body>
-  <!-- Header -->
-  <header>
-    <div class="container header-content">
-      <a href="#" class="logo">
-        <i class="fas fa-utensils"></i> Big Espetos
-      </a>
-      <nav>
-        <ul class="nav-links">
-          <li><a href="#cardapio"><i class="fas fa-list"></i> Cardápio</a></li>
-          <li><a href="#promocoes"><i class="fas fa-percent"></i> Promoções</a></li>
-          <li><a href="#sobre"><i class="fas fa-info-circle"></i> Sobre</a></li>
-        </ul>
-      </nav>
-      <button class="mobile-menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
-      <a href="#" class="btn-login"><i class="fas fa-user"></i> Minha Conta</a>
+  <!-- --- 1. CABEÇALHO / HERO BANNER --- -->
+  <header class="hero-banner">
+    <div class="container">
+      <h1>PIT STOP ESPETU'S</h1>
+      <p class="fonte-manuscrita">petisco bom, cerveja gelado e prosa até tarde</p>
+      <div class="status-badge">
+        <span class="circulo"></span> Fechado agora · abre hoje às 17h30
+      </div>
     </div>
   </header>
-
-  <!-- Hero Section -->
-  <section class="hero">
-    <div>
-      <h1>BIG ESPETOS - <span style="color: var(--accent)">DESDE 2015</span></h1>
-      <p>Os melhores espetos e lanches da sua cidade. Pedidos rápidos e entregas garantidas.</p>
-      <a href="#cardapio" class="btn-login" style="background: var(--light); color: var(--dark); margin-top: 1rem;">Ver Cardápio</a>
-    </div>
-  </section>
-
-  <!-- Categorias -->
-  <section class="section" id="cardapio">
+  
+  <!-- --- 2. QUADRO DE DESTAQUES / LOUSA --- -->
+  <section class="lousa-destaques">
     <div class="container">
-      <div class="section-title">
-        <h2>Nossas Categorias</h2>
-        <p>Escolha sua preferência e faça seu pedido</p>
+      <!-- Etiqueta -->
+      <span>HOJE NO PIT STOP</span>
+      
+      <!-- Lista de destaques -->
+      <div class="item-destaque">
+        <span class="item-nome">Espetinho de picanha</span>
+        <span class="item-preco">R$ 13</span>
       </div>
-      <div class="categories-grid">
-        <a href="#" class="category-card">
-          <i class="fas fa-meat"></i>
-          <h3>Espetos Premium</h3>
-          <p>As melhores cargadas</p>
-        </a>
-        <a href="#" class="category-card">
-          <i class="fas fa-pizza-slice"></i>
-          <h3>Lanches Especiais</h3>
-          <p>Hambúrgueres e mais</p>
-        </a>
-        <a href="#" class="category-card">
-          <i class="fas fa-beer-mug-empty"></i>
-          <h3>Bebidas</h3>
-          <p>Refrigerantes e mais</p>
-        </a>
-        <a href="#" class="category-card">
-          <i class="fas fa-fire"></i>
-          <h3>Promoções</h3>
-          <p>Ofertas especiais</p>
-        </a>
+      <div class="item-destaque">
+        <span class="item-nome">Pastel de camarão</span>
+        <span class="item-preco">R$ 24</span>
+      </div>
+      <div class="item-destaque">
+        <span class="item-nome">Peixe completo</span>
+        <span class="item-preco">R$ 86</span>
+      </div>
+      <div class="item-destaque">
+        <span class="item-nome">Combo Pit Stop</span>
+        <span class="item-preco">R$ 86</span>
       </div>
     </div>
   </section>
-
-  <!-- Produtos em destaque -->
-  <section class="products" id="promocoes">
+  
+  <!-- --- 3. BARRA DE NAVEGAÇÃO / CATEGORIAS --- -->
+  <section class="categorias-carrossel">
     <div class="container">
-      <div class="section-title">
-        <h2>Promoção Black November</h2>
-        <p>Descontos especiais de fim de ano</p>
-      </div>
-      <div class="promo">
-        <h3>Até 50% OFF em Espetos Selecionados</h3>
-        <p>Válido até 30/11/2024 ou enquanto durarem os estoques</p>
-      </div>
-      <div class="products">
-        <div class="product-card">
-          <img src="https://i.imgur.com/original.jpg" alt="Espeto Especial" class="product-image" />
-          <div class="product-info">
-            <h3>Espeto Premium Carne</h3>
-            <p class="price">R$ 29,90</p>
-            <p class="old-price">R$ 49,90</p>
-          </div>
-        </div>
-        <div class="product-card">
-          <img src="https://i.imgur.com/original.jpg" alt="Lanche Duplo" class="product-image" />
-          <div class="product-info">
-            <h3>Lanche Duplo Espeto</h3>
-            <p class="price">R$ 34,90</p>
-            <p class="old-price">R$ 54,90</p>
-          </div>
-        </div>
-        <div class="product-card">
-          <img src="https://i.imgur.com/original.jpg" alt="Combo Familiar" class="product-image" />
-          <div class="product-info">
-            <h3>Combo Familiar</h3>
-            <p class="price">R$ 79,90</p>
-            <p class="old-price">R$ 129,90</p>
-          </div>
-        </div>
+      <div class="categorias-nav" role="tablist">
+        <button class="btn active" aria-current="page">ESPETINHOS</button>
+        <button class="btn">PASTÉIS E APERITIVOS</button>
+        <button class="btn">PORÇÕES</button>
+        <button class="btn">CALDINHOS</button>
+        <button class="btn">TIRA GOSTO</button>
+        <button class="btn">SOBREMESAS</button>
+        <button class="btn">SUCOS</button>
+        <button class="btn">BEBIDAS</button>
       </div>
     </div>
   </section>
-
-  <!-- Sobre -->
-  <section class="section" id="sobre">
+  
+  <!-- --- 4. LISTAGEM DE PRODUTOS --- -->
+  <section class="section-produtos">
     <div class="container">
-      <div class="section-title">
-        <h2>Sobre a Big Espetos</h2>
+      <h2 class="subtitulo">Espetinhos</h2>
+      <div class="divisoria"></div>
+      
+      <!-- Produtos -->
+      <div class="product-card">
+        <img src="https://i.ibb.co/JjLDcyD5/carne.jpg" alt="Espetinho de Carne" />
+        <div class="product-nome">Carne</div>
+        <div class="product-preco">R$ 10,00</div>
+        <button class="product-add">ADICIONAR</button>
       </div>
-      <div style="max-width: 800px; margin: 0 auto;">
-        <p>Há mais de <strong>10 anos</strong> servindo a comunidade com os melhores espetos da cidade. Fundada em 2015, a Big Espetos se destaca pela qualidade dos ingredientes e pelo atendimento diferenciados.</p>
-        <p>Trabalhamos com entregas rápidas para todo o bairro e também recebimentos no local. Faça seu pedido agora e aproveite!</p>
+      
+      <div class="product-card">
+        <img src="https://i.ibb.co/PbkbSnX/carne-com-bacon.jpg" alt="Espetinho de Carne com Bacon" />
+        <div class="product-nome">Carne com Bacon</div>
+        <div class="product-preco">R$ 12,00</div>
+        <button class="product-add">ADICIONAR</button>
       </div>
+      
+      <div class="product-card">
+        <img src="https://i.ibb.co/CFKNFfv/carne-moida-com-bacon.jpg" alt="Espetinho de Carne Moída com Bacon" />
+        <div class="product-nome">Carne Moída com Bacon</div>
+        <div class="product-preco">R$ 11,00</div>
+        <button class="product-add">ADICIONAR</button>
+      </div>
+      
+      <!-- Mais produtos podem ser adicionados aqui -->
     </div>
   </section>
-
-  <!-- Footer -->
-  <footer>
+  
+  <!-- --- 5. CHECKOUT / CARRINHO --- -->
+  <section class="checkout-section">
     <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h4>Big Espetos</h4>
-          <p>Desde 2015 espetando com qualidade e carinho.</p>
-          <div style="margin-top: 1rem;">
-            <a href="#" style="color: #777; text-decoration: none; margin-right: 0.5rem;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-            <a href="#" style="color: #777; text-decoration: none;"><i class="fab fa-instagram"></i> Instagram</a>
-          </div>
+      <h2>Seu pedido</h2>
+      
+      <!-- Alternador retirada/entrega -->
+      <div class="opcao-pagamento">
+        <div>
+          <input type="radio" id="retirada" name="modalidade" checked>
+          <label for="retirada">Retirar no local</label>
         </div>
-        <div class="footer-section">
-          <h4>Cardápio</h4>
-          <ul>
-            <li><a href="#cardapio">Espetos</a></li>
-            <li><a href="#cardapio">Lanches</a></li>
-            <li><a href="#cardapio">Bebidas</a></li>
-            <li><a href="#cardapio">Sobremesas</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h4>Informações</h4>
-          <ul>
-            <li><a href="#">Sobre Nós</a></li>
-            <li><a href="#">FAQ</a></li>
-            <li><a href="#">Horário de Funcionamento</a></li>
-            <li><a href="#">Localização</a></li>
-          </ul>
+        <div>
+          <input type="radio" id="entrega" name="modalidade">
+          <label for="entrega">Entregar</label>
         </div>
       </div>
-      <div class="footer-bottom">
-        &copy; 2024 Big Espetos - Todos os direitos reservados. Criado com ❤️ usando Anota AI
+      
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" placeholder="Seu nome" required />
       </div>
+      
+      <div class="form-group">
+        <label>Segundo nome</label>
+        <input type="text" placeholder="Segundo nome" />
+      </div>
+      
+      <div class="form-group">
+        <label>Celular *</label>
+        <input type="tel" placeholder="(83) 98888-7777" required />
+      </div>
+      
+      <div class="form-group">
+        <label>CEP *</label>
+        <input type="text" placeholder="01001-000" required />
+      </div>
+      
+      <div class="form-group">
+        <label>Rua *</label>
+        <input type="text" placeholder="Av. Floriano Peixoto, 4010" required />
+      </div>
+      
+      <div class="form-group">
+        <label>Bairro *</label>
+        <select required>
+          <option value="" disabled>Selecione seu bairro</option>
+          <option value="Centro">Centro - R$ 7,00</option>
+          <option value="Malvinas">Malvinas - R$ 11,00</option>
+          <option value="Jardim">Jardim</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label>Número *</label>
+        <input type="text" placeholder="Número da casa (ou S/N)" required />
+      </div>
+      
+      <div class="form-group">
+        <label>Ponto de referência</label>
+        <input type="text" placeholder="Ex: próximo ao mercado" />
+      </div>
+      
+      <div class="form-group">
+        <label>Observações</label>
+        <textarea placeholder="Ex: sem cebola, bem passado" rows="2"></textarea>
+      </div>
+      
+      <div class="opcao-pagamento">
+        <div>
+          <input type="radio" name="pagamento" id="pix" checked>
+          <label for="pix">Pix</label>
+        </div>
+        <div>
+          <input type="radio" name="pagamento" id="dinheiro">
+          <label for="dinheiro">Dinheiro</label>
+        </div>
+        <div>
+          <input type="radio" name="pagamento" id="cartao">
+          <label for="cartao">Cartão</label>
+        </div>
+      </div>
+      
+      <div class="checkout-resumo">
+        <div class="item">
+          <span>Taxa de entrega</span>
+          <span>R$ 7,00</span>
+        </div>
+        <div class="item total">
+          <span>Total</span>
+          <span>R$ 27,00</span>
+        </div>
+      </div>
+      
+      <button class="btn-finalizar">FINALIZAR PELO WHATSAPP</button>
+    </div>
+  </section>
+  
+  <!-- --- 6. RODAPÉ / INSTITUCIONAL --- -->
+  <footer class="rodape">
+    <div class="container">
+      <div class="info">
+        <p>
+          Av. Floriano Peixoto, 4010 — Malvinas<br>
+          Seg a Qui: 17h30 às 00h<br>
+          Sex: 17h30 às 01h<br>
+          Sáb: 11h30 às 01h · Domingo: fechado<br>
+          (83) 98888-7759
+        </p>
+      </div>
+      <a href="#" class="login-link">Acesso da casa</a>
     </div>
   </footer>
-
-  <script>
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menuBtn');
-    const navLinks = document.querySelector('.nav-links');
-
-    if (menuBtn && navLinks) {
-      menuBtn.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-      });
-    }
-
-    // Fechar menu ao clicar em um link
-    document.querySelectorAll('.nav-links a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('active');
-      });
-    });
-  </script>
 </body>
 </html>
