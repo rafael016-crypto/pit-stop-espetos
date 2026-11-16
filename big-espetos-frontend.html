@@ -9,6 +9,46 @@
   <meta property="og:title" content="Big Espetos" />
   <meta property="og:description" content="Desde 2015, os melhores espetos da cidade" />
   <meta property="og:type" content="website" />
+  <!-- Firebase Configuration -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJ5SxiDvyGCoaqhsMUhWPr2o70V4u5ads",
+      authDomain: "pit-stop-espetos.firebaseapp.com",
+      projectId: "pit-stop-espetos",
+      storageBucket: "pit-stop-espetos.firebasestorage.app",
+      messagingSenderId: "701782808700",
+      appId: "1:701782808700:web:d22de85c2f0227f0d411f9"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const doc = await db.collection('configuracoes').doc('loja').get();
+        if (doc.exists) {
+          const config = doc.data();
+          
+          // Apply configuration
+          if (config.nomeLoja) {
+            document.title = config.nomeLoja;
+          }
+          if (config.corPrincipal) {
+            document.documentElement.style.setProperty('--primary', config.corPrincipal);
+          }
+          if (config.corSecundaria) {
+            document.documentElement.style.setProperty('--secondary', config.corSecundaria);
+          }
+          if (config.metaDescricao) {
+            const metaDesc = document.querySelector('meta[name="description"]');
+            if (metaDesc) metaDesc.setAttribute('content', config.metaDescricao);
+          }
+        }
+      } catch (error) {
+        console.error('Erro ao carregar configurações:', error);
+      }
+    });
+  </script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {

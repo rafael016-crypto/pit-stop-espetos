@@ -880,7 +880,7 @@
           </div>
 
           <div style="text-align:right;padding-top:20px;border-top:1px solid var(--border);">
-            <button class="btn-sm primary" style="padding:10px 28px;font-size:14px;" onclick="alert('Configurações salvas com sucesso!')">&#128190; Salvar Configurações</button>
+            <button class="btn-sm primary" style="padding:10px 28px;font-size:14px;" onclick="salvarConfigFirebase()">&#128190; Salvar Configurações</button>
           </div>
         </div>
       </div>
@@ -977,6 +977,78 @@
     function closeNotif() {
       document.getElementById('notifPopup').classList.remove('show');
     }
+    
+    // ===== FUNÇÕES FIREBASE CONFIG =====
+    <script>
+      // Firebase Configuration (same as backoffice)
+      const firebaseConfig = {
+        apiKey: "AIzaSyAJ5SxiDvyGCoaqhsMUhWPr2o70V4u5ads",
+        authDomain: "pit-stop-espetos.firebaseapp.com",
+        projectId: "pit-stop-espetos",
+        storageBucket: "pit-stop-espetos.firebasestorage.app",
+        messagingSenderId: "701782808700",
+        appId: "1:701782808700:web:d22de85c2f0227f0d411f9"
+      };
+      
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+      
+      // Function to save configuration to Firebase
+      async function salvarConfigFirebase() {
+        // Coletar valores dos campos
+        const config = {
+          nomeLoja: document.querySelector('input[value="Big Espetos"]').value,
+          slug: document.querySelector('input[value="bigespetos"]').value,
+          logoUrl: document.querySelector('input[placeholder="https://..."]').value,
+          faviconUrl: document.querySelectorAll('input[type="text"]')[2].value,
+          corPrincipal: document.querySelectorAll('input[type="color"]')[0].value,
+          corSecundaria: document.querySelectorAll('input[type="color"]')[1].value,
+          corFundo: document.querySelectorAll('input[type="color"]')[2].value,
+          corTexto: document.querySelectorAll('input[type="color"]')[3].value,
+          telefone: document.querySelectorAll('input[type="text"]')[4].value,
+          whatsapp: document.querySelectorAll('input[type="text"]')[5].value,
+          instagram: document.querySelectorAll('input[type="text"]')[6].value,
+          facebook: document.querySelectorAll('input[type="text"]')[7].value,
+          tiktok: document.querySelectorAll('input[type="text"]')[8].value,
+          endereco: document.querySelectorAll('input[type="text"]')[9].value,
+          cep: document.querySelectorAll('input[type="text"]')[10].value,
+          horarioSegSex: document.querySelectorAll('input[type="text"]')[11].value,
+          horarioSab: document.querySelectorAll('input[type="text"]')[12].value,
+          horarioDom: document.querySelectorAll('input[type="text"]')[13].value,
+          taxaEntrega: parseFloat(document.querySelectorAll('input[type="text"]')[14].value) || 0,
+          pedidoMinimo: parseFloat(document.querySelectorAll('input[type="text"]')[15].value) || 0,
+          metaDescricao: document.querySelectorAll('textarea')[0].value,
+          keywords: document.querySelectorAll('input[type="text"]')[16].value,
+          googleAnalytics: document.querySelectorAll('input[type="text"]')[17].value,
+          facebookPixel: document.querySelectorAll('input[type="text"]')[18].value
+        };
+        
+        try {
+          // Save to Firebase Firestore
+          await db.collection('configuracoes').doc('loja').set(config, { merge: true });
+          alert('Configurações salvas com sucesso no Firebase!');
+          
+          // Dispatch event para notificar outras partes da aplicação
+          window.dispatchEvent(new CustomEvent('configAtualizada', { detail: config }));
+        } catch (error) {
+          alert('Erro ao salvar configurações: ' + error.message);
+          console.error('Erro Firebase:', error);
+        }
+      }
+      
+      // Function to reset configuration
+      function resetarConfiguracoes() {
+        if(confirm('Tem certeza que deseja resetar todas as configurações para os valores padrão?')) {
+          location.reload();
+        }
+      }
+      
+      // Listen for config changes from other windows/tabs
+      window.addEventListener('configAtualizada', (e) => {
+        console.log('Configurações atualizadas:', e.detail);
+      });
+    </script>
 
     // Simulate a new order notification after 15 seconds
     setTimeout(showNotif, 15000);
