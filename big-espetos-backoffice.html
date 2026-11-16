@@ -10,6 +10,11 @@
   
   <!-- Cloudinary SDK -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary/2.0.0/cloudinary-index.min.js"></script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.min.js"></script>
   <script>
     // Configurar Cloudinary após o DOM carregar
     document.addEventListener('DOMContentLoaded', () => {
@@ -761,39 +766,10 @@
         localStorage.setItem('pitstop_produtos', JSON.stringify(produtos));
       }
       
-      // ===== CONFIGURAÇÃO FIREBASE =====
-      // Dados do seu projeto Firebase (consola)
-      const firebaseConfig = {
-        apiKey: "AIzaSyAJ5SxiDvyGCoaqhsMUhWPr2o70V4u5ads",
-        authDomain: "pit-stop-espetos.firebaseapp.com",
-        projectId: "pit-stop-espetos",
-        storageBucket: "pit-stop-espetos.firebasestorage.app",
-        messagingSenderId: "701782808700",
-        appId: "1:701782808700:web:d22de85c2f0227f0d411f9"
-      };
+      // Inicializar Cloudinary (já configurado no head via DOMContentLoaded)
+      // O window.cloudinary já está disponível graças ao script no head
       
-      // Inicializar Firebase
-      firebase.initializeApp(firebaseConfig);
-      
-      // Instanciar serviços
-      const db = firebase.firestore();
-      const auth = firebase.auth();
-      
-      // Log de confirmação no console
-      console.log('🔥 Firebase conectado com sucesso!');
-      console.log('📊 Banco de dados:', db.name);
-      console.log('🔐 Autenticação:', auth ? 'Ativo' : 'Inativo');
-      
-      // Exportar para uso global (opcional)
-      window.firebaseConfig = firebaseConfig;
-      window.db = db;
-      window.auth = auth;
     </script>
-    
-    <!-- Firebase SDKs (versão compatível) -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.min.js"></script>
     
     <!-- Funções Cloudinary -->
     <script>
