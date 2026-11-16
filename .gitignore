@@ -1,0 +1,5 @@
+node_modules
+.env
+alea-extractor/games.csv
+alea-extractor/games.xlsx
+alea-extractor/games-db.json
