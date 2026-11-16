@@ -11,37 +11,45 @@
   <!-- Cloudinary SDK -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary/2.0.0/cloudinary-index.min.js"></script>
   <script>
-    // Cloudinary fica disponível globalmente assim que o SDK carrega
-    // Verificar se window.cloudinary existe após o script carregar
-    setTimeout(() => {
-      if (window.cloudinary) {
-        console.log('☁️ Cloudinary SDK carregado com sucesso!');
-      } else {
-        console.warn('⚠️ Cloudinary SDK carregado, mas window.cloudinary ainda não definido');
-      }
-    }, 100);
+    // Flag para controlar se o Cloudinary já foi configurado
+    var cloudinaryInitialized = false;
     
-    // Configurar Cloudinary após o DOM carregar
-    document.addEventListener('DOMContentLoaded', () => {
-      // Cloudinary URL da sua conta
-      const cloudinaryUrl = 'cloudinary://867785661492271:GAFi2d1lTyT8T9qN2qN6IYJQ7K8@k3ron81p';
-      
-      // Extrair configs da URL Cloudinary
-      const urlParams = new URLSearchParams(cloudinaryUrl.replace('cloudinary://', ''));
-      const [apiKey, apiSecret, cloudName] = cloudinaryUrl.replace('cloudinary://', '').split(':');
-      
-      // Configurar Cloudinary (apenas se window.cloudinary existir)
-      if (window.cloudinary) {
-        window.cloudinary.config({ 
-          cloud_name: cloudName || 'k3ron81p',
-          api_key: apiKey || '867785661492271',
-          api_secret: apiSecret || 'GAFi2d1lTyT8T9qN2qN6IYJQ7K8',
-          cloudinary_url: "upload.php"
-        });
-        console.log('⚙️ Cloudinary configurado via DOMContentLoaded');
-      } else {
-        console.error('❌ Cloudinary não disponível para configuração');
+    // Verificar se o Cloudinary já carregou e configurá-lo
+    function checkCloudinary() {
+      if (window.cloudinary && !cloudinaryInitialized) {
+        cloudinaryInitialized = true;
+        
+        // Configurar Cloudinary imediatamente
+        try {
+          const cloudinaryUrl = 'cloudinary://867785661492271:GAFi2d1lTyT8T9qN2qN6IYJQ7K8@k3ron81p';
+          const urlParams = new URLSearchParams(cloudinaryUrl.replace('cloudinary://', ''));
+          const [apiKey, apiSecret, cloudName] = cloudinaryUrl.replace('cloudinary://', '').split(':');
+          
+          window.cloudinary.config({ 
+            cloud_name: cloudName || 'k3ron81p',
+            api_key: apiKey || '867785661492271',
+            api_secret: apiSecret || 'GAFi2d1lTyT8T9qN2qN6IYJQ7K8',
+            cloudinary_url: "upload.php"
+          });
+          console.log('☁️ Cloudinary configurado via checkCloudinary()');
+        } catch (e) {
+          console.error('❌ Erro ao configurar Cloudinary:', e);
+        }
       }
+      
+      // Agendar nova verificação se ainda não inicializou
+      if (!cloudinaryInitialized) {
+        setTimeout(checkCloudinary, 50);
+      }
+    }
+    
+    // Primeira verificação imediata após o script carregar
+    checkCloudinary();
+    
+    // Nova tentativa ao carregar o DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      // Verificar novamente após o DOM carregar
+      setTimeout(checkCloudinary, 100);
     });
   </script>
   
