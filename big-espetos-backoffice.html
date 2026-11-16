@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Big Espetos - Painel Administrativo</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description" content="Painel de controle Big Espetos" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <!-- Cloudinary SDK -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary/2.0.0/cloudinary-index.min.js"></script>
+  <script>
+    // Configurar Cloudinary a partir da URL fornecida
+    // cloudinary://<api_key>:<api_secret>@k3ron81p
+    const cloudinaryUrl = 'cloudinary://867785661492271:GAFi2d1lTyT8T9qN2qN6IYJQ7K8@k3ron81p';
+    
+    // Extrair configs da URL Cloudinary
+    document.addEventListener('DOMContentLoaded', () => {
+      // Parse the cloudinary URL to get config
+      const urlParams = new URLSearchParams(cloudinaryUrl.replace('cloudinary://', ''));
+      const [apiKey, apiSecret, cloudName] = cloudinaryUrl.replace('cloudinary://', '').split(':');
+      
+      cloudinary.config({ 
+        cloud_name: cloudName || 'k3ron81p',
+        api_key: apiKey || '867785661492271',
+        api_secret: apiSecret || 'GAFi2d1lTyT8T9qN2qN6IYJQ7K8',
+        cloudinary_url: "upload.php"
+      });
+      
+      // Torna o cloudinary disponível globalmente para uso nos handlers
+      window.cloudinary = cloudinary;
+    });
+  </script>
+  <style>
+    :root {
+      --primary: #8b4513;
+      --primary-dark: #5c3108;
+      --secondary: #d2b48c;
+      --accent: #ffc107;
+      --dark: #1a1a1a;
+      --lighter-dark: #252525;
+      --white: #f8f9fa;
+      --text: #333;
+      --text-light: #666;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+      background-color: var(--dark);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background: var(--primary);
+      color: var(--white);
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      padding: 2rem 1.5rem;
+    }
+
+    .sidebar-brand {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 2rem;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .sidebar-brand i {
+      color: var(--accent);
+      margin-right: 0.5rem;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar-menu li {
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-menu a {
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      border-radius: 5px;
+      transition: background 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .sidebar-menu a i {
+      margin-right: 1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 250px;
+      padding: 2rem;
+    }
+
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .header-bar h1 {
+      font-size: 1.8rem;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .user-panel {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .user-panel img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .user-panel span {
+      font-size: 0.8rem;
+    }
+
+    /* Cards/Stats */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--lighter-dark);
+      padding: 1.5rem;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .stat-card i {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card h3 {
+      font-size: 2rem;
+      color: var(--white);
+      margin: 0.5rem 0 0;
+    }
+
+    .stat-card p {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      margin: 0;
+    }
+
+    /* Tabelas */
+    .table-container {
+      background: var(--lighter-dark);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #333;
+    }
+
+    th {
+      background: var(--primary);
+      color: var(--white);
+      font-size: 0.8rem;
+    }
+
+    tr:hover {
+      background: #3a3a3a;
+    }
+
+    .status-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: bold;
+    }
+
+    .status-pending { background: #ffc107; color: #000; }
+    .status-confirmado { background: #28a745; color: #fff; }
+    .status-preparando { background: #fd7e14; color: #fff; }
+    .status-pronto { background: #28a745; color: #fff; }
+    .status-entregue { background: #6c757d; color: #fff; }
+
+    .btn {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* Forms */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--dark);
+      border: 1px solid #444;
+      border-radius: 5px;
+      color: var(--white);
+      font-size: 0.9rem;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal {
+      background: var(--lighter-dark);
+      padding: 2rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .modal h2 {
+      margin-top: 0;
+      color: var(--primary);
+    }
+
+    .modal-close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Alert */
+    .alert {
+      padding: 1rem;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+    }
+
+    .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .alert-danger { background: #f8d7da; color: #721f2c; border: 1px solid #f5c6cb; }
+    .alert-warning { background: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <a href="#" class="sidebar-brand">
+      <i class="fas fa-utensils"></i> Big Espetos
+    </a>
+    <ul class="sidebar-menu">
+      <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+      <li><a href="#pedidos"><i class="fas fa-shopping-bag"></i> Pedidos</a></li>
+      <li><a href="#produtos"><i class="fas fa-box"></i> Produtos</a></li>
+      <li><a href="#categorias"><i class="fas fa-tags"></i> Categorias</a></li>
+      <li><a href="#clientes"><i class="fas fa-users"></i> Clientes</a></li>
+      <li><a href="#relatorios"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+      <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <p>Versão 1.0.0</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <div class="header-bar">
+      <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+      <div class="user-panel">
+        <span>Admin</span>
+      </div>
+    </div>
+
+    <!-- Estatísticas -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <i class="fas fa-shopping-bag"></i>
+        <h3>1,247</h3>
+        <p>Pedidos Totais</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-dollar-sign"></i>
+        <h3>R$ 45.230</h3>
+        <p>Faturamento</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-user-friends"></i>
+        <h3>243</h3>
+        <p>Clientes Cadastros</p>
+      </div>
+      <div class="stat-card">
+        <i class="fas fa-clock"></i>
+        <h3>15m</h3>
+        <p>Último Pedido</p>
+      </div>
+    </div>
+
+    <!-- Cards de ação -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+      <div style="background: var(--lighter-dark); padding: 1.5rem; border-radius: 8px;">
+        <h4><i class="fas fa-shopping-bag"></i> Últimos Pedidos</h4>
+        <p style="color: var(--text-light); font-size: 0.9rem;">Ver todos os pedidos recentes</p>
+        <a href="#pedidos" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Ver Pedidos</a>
+      </div>
+      <div style="background: var(--lighter-dark); padding: 1.5rem; border-radius: 8px;">
+        <h4><i class="fas fa-box"></i> Gerenciar Produtos</h4>
+        <p style="color: var(--text-light); font-size: 0.9rem;">Adicionar e editar itens do cardápio</p>
+        <a href="#produtos" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Gerenciar</a>
+      </div>
+      <div style="background: var(--lighter-dark); padding: 1.5rem; border-radius: 8px;">
+        <h4><i class="fas fa-users"></i> Clientes</h4>
+        <p style="color: var(--text-light); font-size: 0.9rem;">Ver e gerenciar clientes cadastrados</p>
+        <a href="#clientes" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Ver Clientes</a>
+      </div>
+    </div>
+
+    <!-- Tabela de Pedidos -->
+    <div class="table-container">
+      <h3><i class="fas fa-shopping-bag"></i> Últimos Pedidos</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Cliente</th>
+            <th>Itens</th>
+            <th>Valor</th>
+            <th>Status</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>#1024</td>
+            <td>João Silva</td>
+            <td>2x Espeto Premium</td>
+            <td>R$ 59,80</td>
+            <td><span class="status-badge status-preparando">Preparando</span></td>
+            <td>
+              <a href="#" class="btn btn-success btn-sm">Confirmar</a>
+              <a href="#" class="btn btn-danger btn-sm">Cancelar</a>
+            </td>
+          </tr>
+          <tr>
+            <td>#1023</td>
+            <td>Maria Costa</td>
+            <td>1x Lanche Duplo</td>
+            <td>R$ 34,90</td>
+            <td><span class="status-badge status-confirmado">Confirmado</span></td>
+            <td>
+              <a href="#" class="btn btn-success btn-sm">Pronto</a>
+            </td>
+          </tr>
+          <tr>
+            <td>#1022</td>
+            <td>Pedro Santos</td>
+            <td>3x Bebida + 1x Espeto</td>
+            <td>R$ 45,50</td>
+            <td><span class="status-badge status-pending">Pendente</span></td>
+            <td>
+              <a href="#" class="btn btn-primary btn-sm">Aceitar</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Modal para novo produto -->
+    <div id="productModal" class="modal-overlay">
+      <div class="modal">
+        <span class="modal-close" onclick="closeModal()">&times;</span>
+        <h2>Novo Produto</h2>
+        <form id="productForm">
+          <div class="form-group">
+            <label>Nome do Produto</label>
+            <input type="text" required />
+          </div>
+          <div class="form-group">
+            <label>Preço</label>
+            <input type="number" required />
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <select required>
+              <option value="">Selecione uma categoria</option>
+              <option value="espetos">Espetos</option>
+              <option value="lanches">Lanches</option>
+              <option value="bebidas">Bebidas</option>
+              <option value="sobremesas">Sobremesas</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Descrição</label>
+            <textarea rows="3" placeholder="Descreva o produto..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Imagem do Produto</label>
+            <div style="position: relative; width: 100%; margin-top: 8px;">
+              <!-- Preview da imagem -->
+              <div id="imagePreviewCloudinary" style="width: 100%; height: 150px; border: 1px solid #444; border-radius: 5px; overflow: hidden; display: none; background: #333;">
+                <img id="cloudinaryPreviewImage" src="" alt="Preview da imagem" style="width: 100%; height: 100%; object-fit: cover;" />
+              </div>
+              
+              <!-- Botão de upload -->
+              <button type="button" class="btn btn-sm btn-outline" style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.5); color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.7rem;">
+                <i class="fas fa-cloud-upload-alt"></i> Upload
+              </button>
+              <input type="file" id="cloudinaryFileInput" style="display: none;" accept="image/*" onchange="handleCloudinaryFileSelect(event)" />
+              
+              <!-- URL oculta -->
+              <input type="hidden" id="cloudinaryImageUrl" name="produtoImagem">
+            </div>
+          </div>
+          <div style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">Salvar Produto</button>
+            <button type="button" class="btn" onclick="closeModal()">Cancelar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // Abrir modal
+      window.openProductModal = function() {
+        document.getElementById('productModal').style.display = 'flex';
+      };
+
+      // Fechar modal
+      window.closeModal = function() {
+        document.getElementById('productModal').style.display = 'none';
+      };
+
+      // Fechar ao clicar fora
+      window.onclick = function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      };
+
+      // Formulário de produto
+      document.getElementById('productForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Aqui seria a lógica de salvar o produto
+        alert('Produto salvo com sucesso!');
+        closeModal();
+      });
+
+      // Simular logout
+      document.querySelector('.user-panel').addEventListener('click', (e) => {
+        if (e.target.tagName === 'SPAN' || e.target.tagName === 'I') {
+          if (confirm('Deseja sair do sistema?')) {
+            window.location.href = '/login';
+          }
+        }
+      });
+    </script>
+    
+    <!-- Seção Cardápio - Exibição de produtos -->
+    <div id="cardapioSection" style="display:none; margin-top: 2rem;">
+      <div class="card-header">
+        <h3><i class="fas fa-utensils"></i> Cardápio / Produtos</h3>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;" id="cardapioGrid">
+        <!-- Cards de produto serão gerados dinamicamente -->
+      </div>
+    </div>
+
+    <!-- Funções Cloudinary -->
+    <script>
+      // Função para selecionar arquivo e mostrar preview
+      function handleCloudinaryFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Mostrar preview local
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('cloudinaryPreviewImage').src = e.target.result;
+          document.getElementById('imagePreviewCloudinary').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+      
+      // Função para fazer upload para Cloudinary
+      function uploadToCloudinary(file) {
+        return new Promise((resolve, reject) => {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'pit_stop_espetos');
+          formData.append('folder', 'pit_stop_espetos');
+          formData.append('api_key', '867785661492271');
+          
+          const uploadUrl = 'https://api.cloudinary.com/v1_1/k3ron81p/image/upload';
+          
+          fetch(uploadUrl, {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              reject(new Error(data.error.message));
+            } else {
+              resolve({
+                url: data.secure_url,
+                public_id: data.public_id
+              });
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+        });
+      }
+      
+      // Função para formatar URL Cloudinary com transformações
+      function formatCloudinaryUrl(url, width, height) {
+        // Se já tem transformações, manter; senão adicionar
+        if (url.includes('/') && url.split('/').length > 1) {
+          // Já tem path, adicionar width/height
+          const base = url.split('/upload/')[0];
+          return url + `/f_auto,q_auto,w_${width || 400},h_${height || 300},c_limit`;
+        }
+        return url;
+      }
+      
+      // Função para renderizar cards de produto no cardápio
+      function renderCardapio(produtos = []) {
+        const grid = document.getElementById('cardapioGrid');
+        if (!grid) return;
+        
+        // Produtos padrão se nenhum for fornecido
+        const defaultProdutos = [
+          { id: 1, nome: 'Espetinho de Picanha', categoria: 'Espetinhos', preco: 12.00, imagem: 'https://res.cloudinary.com/k3ron81p/image/upload/v1/sample_espetinho', estoque: 45 },
+          { id: 2, nome: 'Pastel de Carne', categoria: 'Pastéis', preco: 21.00, imagem: 'https://res.cloudinary.com/k3ron81p/image/upload/v1/sample_pastel', estoque: 12 },
+          { id: 3, nome: 'Refrigerante Lata', categoria: 'Bebidas', preco: 8.00, imagem: 'https://res.cloudinary.com/k3ron81p/image/upload/v1/sample_refrigerante', estoque: 50 },
+        ];
+        
+        const itens = produtos.length > 0 ? produtos : defaultProdutos;
+        
+        grid.innerHTML = itens.map(produto => {
+          const imagemFormatada = formatCloudinaryUrl(produto.imagem, 200, 150);
+          const estoqueClass = produto.estoque <= 10 ? 'estoque-baixo' : produto.estoque <= 30 ? 'estoque-medio' : 'estoque-normal';
+          
+          return `
+            <div class="produto-card" style="background: var(--lighter-dark); border-radius: 8px; padding: 1rem; text-align: center; transition: transform 0.2s;">
+              <img src="${imagemFormatada}" alt="${produto.nome}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 0.5rem;">
+              <h4 style="font-size: 0.9rem; margin: 0.5rem 0; color: var(--white);">${produto.nome}</h4>
+              <div style="font-size: 0.8rem; color: var(--accent); margin-bottom: 0.5rem;">R$ ${produto.preco.toFixed(2)}</div>
+              <span class="status-badge ${estoqueClass}" style="padding: 2px 6px; font-size: 0.65rem; margin: 0.2rem 0;">
+                Estoque: ${produto.estoque}
+              </span>
+              <div style="margin-top: 0.5rem;">
+                <button class="btn btn-sm btn-primary" style="width: 100%; padding: 4px;">Editar</button>
+                <button class="btn btn-sm btn-outline" style="width: 100%; padding: 4px;">Estoque</button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+      
+      // Inicializar cardápio ao carregar
+      document.addEventListener('DOMContentLoaded', () => {
+        renderCardapio();
+      });
+      
+      // Função para abrir modal de produto
+      window.openProductModal = function() {
+        document.getElementById('productModal').style.display = 'flex';
+      };
+      
+      // Fechar modal
+      window.closeModal = function() {
+        document.getElementById('productModal').style.display = 'none';
+        // Resetar o input de arquivo
+        document.getElementById('cloudinaryFileInput').value = '';
+        document.getElementById('imagePreviewCloudinary').style.display = 'none';
+      };
+      
+      // Fechar ao clicar fora
+      window.onclick = function(event) {
+        const modal = document.getElementById('productModal');
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      };
+      
+      // Processar o formulário de produto com upload Cloudinary
+      document.getElementById('productForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const nome = document.querySelector('#productForm input[type="text"]').value;
+        const preco = document.querySelector('#productForm input[type="number"]').value;
+        const categoria = document.querySelector('#productForm select').value;
+        
+        if (!nome || !preco) {
+          alert('Preencha nome e preço!');
+          return;
+        }
+        
+        // Mostrar estado de carregamento
+        const btn = this.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = 'Salvando...';
+        
+        // Se houver imagem selecionada, fazer upload
+        let imagemUrl = 'https://res.cloudinary.com/k3ron81p/image/upload/v1/sample_espetinho';
+        const fileInput = document.getElementById('cloudinaryFileInput');
+        
+        if (fileInput && fileInput.files && fileInput.files[0]) {
+          try {
+            const result = await uploadToCloudinary(fileInput.files[0]);
+            imagemUrl = result.url;
+            alert('Imagem enviada para Cloudinary!\nURL: ' + resultado.url);
+          } catch (err) {
+            alert('Erro ao fazer upload: ' + err.message);
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            return;
+          }
+        }
+        
+        // Simular salvar produto (em um sistema real, seria um fetch para API)
+        const produtoNovo = {
+          id: Date.now(),
+          nome,
+          preco: parseFloat(preco),
+          categoria,
+          imagem: imagemUrl,
+          estoque: 0
+        };
+        
+        // Fechar modal e renderizar
+        closeModal();
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        
+        alert('Produto salvo com sucesso!\n\nNome: ' + nome + '\nPreço: R$ ' + preco + '\nImagem: ' + imagemUrl.split('/').pop().split('?')[0]);
+        
+        // Atualizar cardápio
+        renderCardapio([...getProdutosSalvos(), produtoNovo]);
+      });
+      
+      // Função auxiliar para obter produtos salvos (simulação local)
+      function getProdutosSalvos() {
+        const saved = localStorage.getItem('pitstop_produtos');
+        return saved ? JSON.parse(saved) : [];
+      }
+      
+      // Função para salvar produto no localStorage (simulação)
+      function salvarProdutoLocal(produto) {
+        const produtos = getProdutosSalvos();
+        produtos.push(produto);
+        localStorage.setItem('pitstop_produtos', JSON.stringify(produtos));
+      }
+    </script>
+    
+    <!-- Funções Cloudinary -->
+    <script>
+      // Função para selecionar arquivo e mostrar preview
+      function handleCloudinaryFileSelect(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Mostrar preview local
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('cloudinaryPreviewImage').src = e.target.result;
+          document.getElementById('imagePreviewCloudinary').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+      
+      // Função para fazer upload para Cloudinary
+      function uploadToCloudinary(file) {
+        return new Promise((resolve, reject) => {
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'pit_stop_espetos');
+          formData.append('folder', 'pit_stop_espetos');
+          formData.append('api_key', '867785661492271');
+          
+          // Usar a URL direta do Cloudinary
+          const uploadUrl = 'https://api.cloudinary.com/v1_1/k3ron81p/image/upload';
+          
+          fetch(uploadUrl, {
+            method: 'POST',
+            body: formData
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.error) {
+              reject(new Error(data.error.message));
+            } else {
+              resolve({
+                url: data.secure_url,
+                public_id: data.public_id
+              });
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+        });
+      }
+      
+      // Função para formatar e exibir imagem no cardápio
+      function formatCloudinaryImage(url, options = {}) {
+        // Adicionar transformações automaticamente
+        const defaultOptions = {
+          width: 400,
+          height: 300,
+          crop: 'limit',
+          format: 'auto'
+        };
+        
+        const mergedOptions = { ...defaultOptions, ...options };
+        
+        // Construir URL com transformações
+        let finalUrl = url;
+        if (mergedOptions.width) {
+          finalUrl += `/${mergedOptions.crop}/w_${mergedOptions.width}/h_${mergedOptions.height}`;
+        }
+        
+        return finalUrl;
+      }
+    </script>
+  </div>
+</body>
+</html>

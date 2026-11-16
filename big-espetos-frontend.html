@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Big Espetos - Lanches e Pedidos</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description" content="Big Espetos - Desde 2015, os melhores espetos da cidade" />
+  <meta property="og:title" content="Big Espetos" />
+  <meta property="og:description" content="Desde 2015, os melhores espetos da cidade" />
+  <meta property="og:type" content="website" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary: #8b4513;
+      --primary-light: #a0522d;
+      --secondary: #d2b48c;
+      --accent: #ff dead; /* cor que já vi no site */
+      --dark: #1a1a1a;
+      --light: #f5f0e8;
+      --text: #333;
+      --text-light: #666;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+      background-color: var(--dark);
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background: var(--primary);
+      padding: 1rem 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--light);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      color: var(--light);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    .btn-login {
+      background: var(--accent);
+      color: var(--dark);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .btn-login:hover {
+      background: #ffc107;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://i.imgur.com/original.jpg') center/cover no-fixed;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-top: 60px;
+      padding: 0 20px;
+    }
+
+    .hero h1 {
+      font-size: 3.5rem;
+      color: var(--light);
+      margin-bottom: 1rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Categorias/Sections */
+    .section {
+      padding: 4rem 0;
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-title h2 {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title p {
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .category-card {
+      background: #2a2a2a;
+      border-radius: 10px;
+      padding: 2rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.3s, background 0.3s;
+    }
+
+    .category-card:hover {
+      transform: translateY(-5px);
+      background: #3a3a3a;
+    }
+
+    .category-card i {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .category-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .category-card p {
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    /* Produtos */
+    .products {
+      background: var(--dark);
+    }
+
+    .product-card {
+      background: #252525;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+      transition: transform 0.3s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      background: #333;
+    }
+
+    .product-info {
+      padding: 1rem;
+    }
+
+    .product-info h3 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .product-info .price {
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .product-info .old-price {
+      color: var(--text-light);
+      font-size: 0.8rem;
+      text-decoration: line-through;
+      margin-right: 0.5rem;
+    }
+
+    /* Promoções */
+    .promo {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+      border-radius: 10px;
+      margin: 2rem 0;
+    }
+
+    .promo h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .promo p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    /* Footer */
+    footer {
+      background: #111;
+      color: #aaa;
+      padding: 3rem 0 1rem;
+    }
+
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .footer-section h4 {
+      color: var(--light);
+      margin-bottom: 1rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .footer-section li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section a {
+      color: #777;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section a:hover {
+      color: var(--accent);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid #222;
+      padding-top: 2rem;
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--light);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: var(--primary);
+        flex-direction: column;
+        padding: 1rem;
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo">
+        <i class="fas fa-utensils"></i> Big Espetos
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#cardapio"><i class="fas fa-list"></i> Cardápio</a></li>
+          <li><a href="#promocoes"><i class="fas fa-percent"></i> Promoções</a></li>
+          <li><a href="#sobre"><i class="fas fa-info-circle"></i> Sobre</a></li>
+        </ul>
+      </nav>
+      <button class="mobile-menu-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
+      <a href="#" class="btn-login"><i class="fas fa-user"></i> Minha Conta</a>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div>
+      <h1>BIG ESPETOS - <span style="color: var(--accent)">DESDE 2015</span></h1>
+      <p>Os melhores espetos e lanches da sua cidade. Pedidos rápidos e entregas garantidas.</p>
+      <a href="#cardapio" class="btn-login" style="background: var(--light); color: var(--dark); margin-top: 1rem;">Ver Cardápio</a>
+    </div>
+  </section>
+
+  <!-- Categorias -->
+  <section class="section" id="cardapio">
+    <div class="container">
+      <div class="section-title">
+        <h2>Nossas Categorias</h2>
+        <p>Escolha sua preferência e faça seu pedido</p>
+      </div>
+      <div class="categories-grid">
+        <a href="#" class="category-card">
+          <i class="fas fa-meat"></i>
+          <h3>Espetos Premium</h3>
+          <p>As melhores cargadas</p>
+        </a>
+        <a href="#" class="category-card">
+          <i class="fas fa-pizza-slice"></i>
+          <h3>Lanches Especiais</h3>
+          <p>Hambúrgueres e mais</p>
+        </a>
+        <a href="#" class="category-card">
+          <i class="fas fa-beer-mug-empty"></i>
+          <h3>Bebidas</h3>
+          <p>Refrigerantes e mais</p>
+        </a>
+        <a href="#" class="category-card">
+          <i class="fas fa-fire"></i>
+          <h3>Promoções</h3>
+          <p>Ofertas especiais</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Produtos em destaque -->
+  <section class="products" id="promocoes">
+    <div class="container">
+      <div class="section-title">
+        <h2>Promoção Black November</h2>
+        <p>Descontos especiais de fim de ano</p>
+      </div>
+      <div class="promo">
+        <h3>Até 50% OFF em Espetos Selecionados</h3>
+        <p>Válido até 30/11/2024 ou enquanto durarem os estoques</p>
+      </div>
+      <div class="products">
+        <div class="product-card">
+          <img src="https://i.imgur.com/original.jpg" alt="Espeto Especial" class="product-image" />
+          <div class="product-info">
+            <h3>Espeto Premium Carne</h3>
+            <p class="price">R$ 29,90</p>
+            <p class="old-price">R$ 49,90</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://i.imgur.com/original.jpg" alt="Lanche Duplo" class="product-image" />
+          <div class="product-info">
+            <h3>Lanche Duplo Espeto</h3>
+            <p class="price">R$ 34,90</p>
+            <p class="old-price">R$ 54,90</p>
+          </div>
+        </div>
+        <div class="product-card">
+          <img src="https://i.imgur.com/original.jpg" alt="Combo Familiar" class="product-image" />
+          <div class="product-info">
+            <h3>Combo Familiar</h3>
+            <p class="price">R$ 79,90</p>
+            <p class="old-price">R$ 129,90</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sobre -->
+  <section class="section" id="sobre">
+    <div class="container">
+      <div class="section-title">
+        <h2>Sobre a Big Espetos</h2>
+      </div>
+      <div style="max-width: 800px; margin: 0 auto;">
+        <p>Há mais de <strong>10 anos</strong> servindo a comunidade com os melhores espetos da cidade. Fundada em 2015, a Big Espetos se destaca pela qualidade dos ingredientes e pelo atendimento diferenciados.</p>
+        <p>Trabalhamos com entregas rápidas para todo o bairro e também recebimentos no local. Faça seu pedido agora e aproveite!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Big Espetos</h4>
+          <p>Desde 2015 espetando com qualidade e carinho.</p>
+          <div style="margin-top: 1rem;">
+            <a href="#" style="color: #777; text-decoration: none; margin-right: 0.5rem;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            <a href="#" style="color: #777; text-decoration: none;"><i class="fab fa-instagram"></i> Instagram</a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Cardápio</h4>
+          <ul>
+            <li><a href="#cardapio">Espetos</a></li>
+            <li><a href="#cardapio">Lanches</a></li>
+            <li><a href="#cardapio">Bebidas</a></li>
+            <li><a href="#cardapio">Sobremesas</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Informações</h4>
+          <ul>
+            <li><a href="#">Sobre Nós</a></li>
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Horário de Funcionamento</a></li>
+            <li><a href="#">Localização</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2024 Big Espetos - Todos os direitos reservados. Criado com ❤️ usando Anota AI
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const menuBtn = document.getElementById('menuBtn');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (menuBtn && navLinks) {
+      menuBtn.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+      });
+    }
+
+    // Fechar menu ao clicar em um link
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('active');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Big Espetos - Configurações</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #8b4513;
+      --primary-dark: #5c3108;
+      --sidebar-bg: #1a1a1a;
+      --sidebar-text: #a8a29e;
+      --sidebar-active: #fff;
+      --bg: #f5f0e8;
+      --surface: #fff;
+      --text: #1a1a1a;
+      --muted: #666;
+      --border: #e0d8d2;
+      --green: #28a745;
+      --red: #dc3545;
+      --blue: #6c757d;
+      --purple: #6f42c1;
+      --yellow: #ffc107;
+      --font: 'Inter', -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 250px;
+      background: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+    .sidebar-logo {
+      padding: 24px 20px;
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-logo span { color: var(--primary); }
+    .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+    .sidebar-nav a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-nav a:hover { color: #fff; background: rgba(255,255,255,0.04); }
+    .sidebar-nav a.active {
+      color: #fff;
+      background: rgba(139,69,19,0.1);
+      border-left-color: var(--primary);
+    }
+    .sidebar-nav .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+    .sidebar-nav .nav-label { flex: 1; }
+    .sidebar-nav .nav-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 13px;
+    }
+    .sidebar-footer .user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sidebar-footer .user-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .sidebar-footer .user-info h5 { font-size: 13px; color: #fff; font-weight: 600; }
+    .sidebar-footer .user-info p { font-size: 11px; color: var(--sidebar-text); }
+
+    /* MAIN */
+    .main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOPBAR */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .topbar h2 { font-size: 20px; font-weight: 700; }
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .topbar-right .notification-btn {
+      position: relative;
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    .topbar-right .notification-btn .notif-dot {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      width: 10px;
+      height: 10px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: pulse-dot 1.5s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+    .topbar-right .btn-logout {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .topbar-right .btn-logout:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* CONTENT */
+    .content {
+      padding: 24px 28px;
+      flex: 1;
+    }
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* METRICS */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .metric-card .m-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .metric-card .m-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    .metric-card .m-value {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .metric-card .m-label { font-size: 13px; color: var(--muted); }
+    .metric-card .m-change {
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+    .metric-card .m-change.up { color: var(--green); }
+    .metric-card .m-change.down { color: var(--red); }
+
+    /* TABLES */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .card-header h3 { font-size: 16px; font-weight: 700; }
+    .card-header .btn-sm {
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: none;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .card-header .btn-sm:hover { border-color: var(--primary); color: var(--primary); }
+    .card-header .btn-sm.primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+    .card-header .btn-sm.primary:hover { background: var(--primary-dark); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table th {
+      text-align: left;
+      padding: 12px 20px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #fafaf9;
+      border-bottom: 1px solid var(--border);
+    }
+    table td {
+      padding: 12px 20px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    table tr:last-child td { border-bottom: none; }
+    table tr:hover td { background: #fafaf9; }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .status-badge.pending { background: #fff3cd; color: #856404; }
+    .status-badge.pending .dot { background: #ffc107; }
+    .status-badge.active { background: #d4edda; color: #155724; }
+    .status-badge.active .dot { background: #28a745; }
+    .status-badge.inactive { background: #f8d7da; color: #721f2c; }
+    .status-badge.inactive .dot { background: #dc3545; }
+
+    .action-btn {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .action-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* RECENT ORDERS LIST */
+    .recent-orders { margin-bottom: 24px; }
+
+    /* TOGGLE TABS */
+    .tab-bar {
+      display: flex;
+      gap: 4px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+    .tab-bar button {
+      padding: 8px 20px;
+      border: none;
+      background: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-bar button.active {
+      background: var(--primary);
+      color: #fff;
+    }
+    .tab-bar button:not(.active):hover { color: var(--primary); }
+
+    /* PRODUCT FORM */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--muted);
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      font-family: var(--font);
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+    /* SETTINGS */
+    .settings-section { margin-bottom: 32px; }
+    .settings-section h4 { font-size: 15px; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .color-inputs {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .color-inputs .color-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .color-inputs .color-item input[type="color"] {
+      width: 48px;
+      height: 48px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      padding: 2px;
+    }
+    .color-inputs .color-item span { font-size: 12px; color: var(--muted); }
+
+    /* SOUND NOTIFICATION */
+    .notification-popup {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      gap: 14px;
+      animation: slideIn 0.3s ease;
+    }
+    .notification-popup.show { display: flex; }
+    @keyframes slideIn {
+      from { transform: translateX(100px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .notification-popup .notif-icon { font-size: 32px; }
+    .notification-popup .notif-text h4 { font-size: 15px; font-weight: 700; }
+    .notification-popup .notif-text p { font-size: 13px; color: var(--muted); }
+    .notification-popup .notif-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--muted);
+      margin-left: 8px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 992px) {
+      .sidebar { width: 60px; overflow: hidden; }
+      .sidebar-logo span:not(.logo-emoji) { display: none; }
+      .sidebar-nav a .nav-label, .sidebar-nav .nav-badge { display: none; }
+      .sidebar-footer .user-info { display: none; }
+      .sidebar-footer .user { justify-content: center; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .content { padding: 16px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      table { font-size: 13px; }
+      table th, table td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-emoji">&#127828;</span>
+      <span>Big Espetos</span>
+    </div>
+    <nav class="sidebar-nav">
+      <a href="#" class="active" data-page="dashboard" onclick="switchPage('dashboard',this)">
+        <span class="nav-icon">&#128202;</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a href="#" data-page="pedidos" onclick="switchPage('pedidos',this)">
+        <span class="nav-icon">&#128203;</span>
+        <span class="nav-label">Pedidos</span>
+        <span class="nav-badge">12</span>
+      </a>
+      <a href="#" data-page="produtos" onclick="switchPage('produtos',this)">
+        <span class="nav-icon">&#127828;</span>
+        <span class="nav-label">Produtos</span>
+      </a>
+      <a href="#" data-page="categorias" onclick="switchPage('categorias',this)">
+        <span class="nav-icon">&#128220;</span>
+        <span class="nav-label">Categorias</span>
+      </a>
+      <a href="#" data-page="promocoes" onclick="switchPage('promocoes',this)">
+        <span class="nav-icon">&#127991;</span>
+        <span class="nav-label">Promoções</span>
+      </a>
+      <a href="#" data-page="clientes" onclick="switchPage('clientes',this)">
+        <span class="nav-icon">&#128101;</span>
+        <span class="nav-label">Clientes</span>
+      </a>
+      <a href="#" data-page="configuracoes" onclick="switchPage('configuracoes',this)">
+        <span class="nav-icon">&#128295;</span>
+        <span class="nav-label">Configurações</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user">
+        <div class="user-avatar">J</div>
+        <div class="user-info">
+          <h5>Admin Big Espetos</h5>
+          <p>painel@bigespetos.com</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <h2 id="pageTitle">Dashboard</h2>
+      <div class="topbar-right">
+        <button class="notification-btn" onclick="showNotif()">&#128276; <span class="notif-dot"></span></button>
+        <button class="btn-logout">&#128682; Sair</button>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="page-section active" id="page-dashboard">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Pedidos Hoje</span>
+              <span class="m-icon" style="background:#fef3c7;">&#128230;</span>
+            </div>
+            <div class="m-value" style="color:var(--yellow);">24</div>
+            <span class="m-change up">&#9650; +8% que ontem</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Faturamento Hoje</span>
+              <span class="m-icon" style="background:#d1fae5;">&#128176;</span>
+            </div>
+            <div class="m-value" style="color:var(--green);">R$ 1.540</div>
+            <span class="m-change up">&#9650; +12% que ontem</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Ticket Médio</span>
+              <span class="m-icon" style="background:#dbeafe;">&#128202;</span>
+            </div>
+            <div class="m-value" style="color:var(--blue);">R$ 64,20</div>
+            <span class="m-change up">&#9650; +R$ 3,10</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Pedidos no Mês</span>
+              <span class="m-icon" style="background:#f3e8ff;">&#128200;</span>
+            </div>
+            <div class="m-value" style="color:var(--purple);">892</div>
+            <span class="m-change up">&#9650; +23% mês passado</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Clientes</span>
+              <span class="m-icon" style="background:#fef2f2;">&#128101;</span>
+            </div>
+            <div class="m-value">428</div>
+            <span class="m-change up">&#9650; +15 novos</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Produtos Vendidos</span>
+              <span class="m-icon" style="background:#fffbeb;">&#127828;</span>
+            </div>
+            <div class="m-value">3.147</div>
+            <span class="m-change up">&#9650; +18%</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Cancelamentos</span>
+              <span class="m-icon" style="background:#fee2e2;">&#10060;</span>
+            </div>
+            <div class="m-value" style="color:var(--red);">8</div>
+            <span class="m-change down">&#9660; 1,2% taxa</span>
+          </div>
+          <div class="metric-card">
+            <div class="m-header">
+              <span class="m-label">Lucro Estimado</span>
+              <span class="m-icon" style="background:#ecfdf5;">&#128176;</span>
+            </div>
+            <div class="m-value" style="color:var(--green);">R$ 15.240</div>
+            <span class="m-change up">&#9650; Margem 45%</span>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-title">Vendas dos Últimos 7 Dias</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Seg</span><span style="font-weight:600;">45 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:100%;background:var(--primary);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Ter</span><span style="font-weight:600;">38 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:75%;background:var(--green);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Qua</span><span style="font-weight:600;">52 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:85%;background:var(--blue);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Qui</span><span style="font-weight:600;">67 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:90%;background:var(--primary);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Sex</span><span style="font-weight:600;">89 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:95%;background:var(--yellow);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Sáb</span><span style="font-weight:600;">73 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:88%;background:var(--primary);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Dom</span><span style="font-weight:600;">31 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:45%;background:var(--green);border-radius:4px;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Produtos Mais Vendidos</div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Espeto Premium</span><span style="font-weight:600;">342 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:100%;background:var(--primary);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Lanche Duplo</span><span style="font-weight:600;">287 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:84%;background:var(--green);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Espeto Vegetariano</span><span style="font-weight:600;">198 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:58%;background:var(--blue);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Bebida Garrafa</span><span style="font-weight:600;">156 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:46%;background:var(--purple);border-radius:4px;"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Batata Cheddar</span><span style="font-weight:600;">134 un.</span></div>
+                <div style="height:6px;background:#e0d8d2;border-radius:4px;overflow:hidden;"><div style="height:100%;width:39%;background:var(--yellow);border-radius:4px;"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">Pedidos por Horário</div>
+            <div style="display:flex;align-items:center;gap:30px;justify-content:center;padding:10px 0;">
+              <div style="width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--primary) 0% 45%, var(--green) 45% 70%, var(--blue) 70% 85%, var(--purple) 85% 100%);"></div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--primary);"></span> 19h-21h (42%)</div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--green);"></span> 12h-14h (20%)</div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--blue);"></span> 21h-23h (18%)</div>
+                <div style="display:flex;align-items:center;gap:8px;font-size:12px;"><span style="width:10px;height:10px;border-radius:50%;background:var(--purple);"></span> 18h-19h (20%)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RECENT ORDERS -->
+        <div class="card recent-orders">
+          <div class="card-header">
+            <h3>&#128196; Últimos Pedidos</h3>
+            <button class="btn-sm primary" onclick="switchPage('pedidos', document.querySelector('[data-page=pedidos]'))">Ver Todos</button>
+          </div>
+          <table>
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Itens</th><th>Total</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td>#1024</td><td>João Silva</td><td>2x Espeto Premium + 1x Refri</td><td>R$ 74,80</td><td><span class="status-badge active"><span class="dot"></span>Confirmado</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+              <tr><td>#1023</td><td>Maria Costa</td><td>1x Lanche Duplo</td><td>R$ 39,90</td><td><span class="status-badge pending"><span class="dot"></span>Preparando</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+              <tr><td>#1022</td><td>Pedro Santos</td><td>3x Bebida + 2x Espeto</td><td>R$ 89,50</td><td><span class="status-badge inactive"><span class="dot"></span>Pago</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== PEDIDOS ===== -->
+      <div class="page-section" id="page-pedidos">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div class="tab-bar">
+            <button class="active">&#128276; Novos (5)</button>
+            <button>Em Preparo (3)</button>
+            <button>&#128666; Em Entrega (2)</button>
+            <button>&#10003; Finalizados (34)</button>
+            <button>&#10060; Cancelados (2)</button>
+          </div>
+          <div><input type="text" placeholder="&#128269; Buscar pedido..." style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none;"></div>
+        </div>
+        <div class="card" style="margin-bottom:16px;">
+          <table>
+            <thead><tr><th>Pedido</th><th>Cliente</th><th>Telefone</th><th>Endereço</th><th>Itens</th><th>Total</th><th>Pagamento</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>#1024</strong></td><td>João Silva</td><td>(11) 98888-7777</td><td>Rua das Flores, 100 - Centro</td><td>2x Espeto Premium + 1x Refri</td><td>R$ 74,80</td><td>Cartão</td><td><span class="status-badge active"><span class="dot"></span>Confirmado</span></td><td><button class="action-btn">Confirmar</button></td></tr>
+              <tr><td><strong>#1023</strong></td><td>Maria Costa</td><td>(11) 97777-6666</td><td>Av. Brasil, 456 - Jardins</td><td>1x Lanche Duplo</td><td>R$ 39,90</td><td>PIX</td><td><span class="status-badge pending"><span class="dot"></span>Preparando</span></td><td><button class="action-btn">Pronto</button></td></tr>
+              <tr><td><strong>#1022</strong></td><td>Pedro Santos</td><td>(11) 96666-5555</td><td>Rua C, 789 - Centro</td><td>3x Bebida + 2x Espeto</td><td>R$ 89,50</td><td>Dinheiro</td><td><span class="status-badge inactive"><span class="dot"></span>Pago</span></td><td><button class="action-btn">Finalizar</button></td></tr>
+              <tr><td><strong>#1021</strong></td><td>Ana Lima</td><td>(11) 95555-4444</td><td>Rua D, 321 - Vila Nova</td><td>Espeto Vegetariano</td><td>R$ 28,50</td><td>Cartão</td><td><span class="status-badge active"><span class="dot"></span>Confirmado</span></td><td><button class="action-btn">Confirmar</button></td></tr>
+              <tr><td><strong>#1020</strong></td><td>Carlos Alves</td><td>(11) 94444-3333</td><td>Av. E, 654 - Centro</td><td>1x Batata Cheddar + 1x Refrigerante</td><td>R$ 22,90</td><td>Cartão</td><td><span class="status-badge inactive"><span class="dot"></span>Pago</span></td><td><button class="action-btn">Finalizar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== PRODUTOS ===== -->
+      <div class="page-section" id="page-produtos">
+        <div class="card">
+          <div class="card-header">
+            <h3>&#127828; Gerenciar Produtos</h3>
+            <button class="btn-sm primary" onclick openProductModal()">+ Novo Produto</button>
+          </div>
+          <div class="form-grid" style="padding:20px;border-bottom:1px solid var(--border);">
+            <div class="form-group">
+              <label>Nome do Produto</label>
+              <input type="text" placeholder="Ex: Espeto Premium Carne" value="Espeto Premium Carne">
+            </div>
+            <div class="form-group">
+              <label>Categoria</label>
+              <select required>
+                <option value="">Selecione uma categoria</option>
+                <option value="espetos">Espetos</option>
+                <option value="lanches">Lanches</option>
+                <option value="bebidas">Bebidas</option>
+                <option value="sobremesas">Sobremesas</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column:1/-1;">
+              <label>Descrição</label>
+              <textarea rows="2" placeholder="Descreva o produto...">Espeto de carne bovina com segredo da casa, acompanha farofa especial e pão francês.</textarea>
+            </div>
+            <div class="form-row" style="grid-column:1/-1;">
+              <div class="form-group">
+                <label>Preço (R$)</label>
+                <input type="text" value="29,90">
+              </div>
+              <div class="form-group">
+                <label>Preço Promocional</label>
+                <input type="text" placeholder="Ex: 24,90">
+              </div>
+              <div class="form-group">
+                <label>Disponibilidade</label>
+                <select required>
+                  <option value="disponivel">Disponível</option>
+                  <option value="indisponivel">Indisponível</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <table>
+            <thead><tr><th>Produto</th><th>Categoria</th><th>Preço</th><th>Promoção</th><th>Vendas</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Espeto Premium Carne</strong></td><td>Espetos</td><td>R$ 29,90</td><td>—</td><td>342</td><td><span class="status-badge active"><span class="dot"></span>Disponível</span></td><td><button class="action-btn">Editar</button> <button class="action-btn">&#128465;</button></td></tr>
+              <tr><td><strong>Lanche Duplo Especial</strong></td><td>Lanches</td><td>R$ 39,90</td><td>R$ 45,90</td><td>134</td><td><span class="status-badge active"><span class="dot"></span>Disponível</span></td><td><button class="action-btn">Editar</button> <button class="action-btn">&#128465;</button></td></tr>
+              <tr><td><strong>Espeto Vegetariano</strong></td><td>Espetos</td><td>R$ 27,90</td><td>—</td><td>89</td><td><span class="status-badge active"><span class="dot"></span>Disponível</span></td><td><button class="action-btn">Editar</button> <button class="action-btn">&#128465;</button></td></tr>
+              <tr><td><strong>Bebida Garrafa 600ml</strong></td><td>Bebidas</td><td>R$ 8,90</td><td>—</td><td>210</td><td><span class="status-badge active"><span class="dot"></span>Disponível</span></td><td><button class="action-btn">Editar</button> <button class="action-btn">&#128465;</button></td></tr>
+              <tr><td><strong>Batata Cheddar</strong></td><td>Lanches</td><td>R$ 18,90</td><td>—</td><td>156</td><td><span class="status-badge active"><span class="dot"></span>Disponível</span></td><td><button class="action-btn">Editar</button> <button class="action-btn">&#128465;</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== CATEGORIAS ===== -->
+      <div class="page-section" id="page-categorias">
+        <div class="card">
+          <div class="card-header">
+            <h3>&#128220; Categorias</h3>
+            <button class="btn-sm primary" onclick="alert('Nova categoria!')">+ Nova Categoria</button>
+          </div>
+          <table>
+            <thead><tr><th>Nome</th><th>Ícone</th><th>Produtos</th><th>Ordem</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Espetos</strong></td><td>&#127828;</td><td>8</td><td>1</td><td><span class="status-badge active"><span class="dot"></span>Ativo</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+              <tr><td><strong>Lanches</strong></td><td>&#127828;</td><td>5</td><td>2</td><td><span class="status-badge active"><span class="dot"></span>Ativo</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+              <tr><td><strong>Bebidas</strong></td><td>&#129346;</td><td>6</td><td>3</td><td><span class="status-badge active"><span class="dot"></span>Ativo</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+              <tr><td><strong>Sobremesas</strong></td><td>&#127852;</td><td>4</td><td>4</td><td><span class="status-badge active"><span class="dot"></span>Ativo</span></td><td><button class="action-btn">&#9998;</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== PROMOÇÕES ===== -->
+      <div class="page-section" id="page-promocoes">
+        <div class="card">
+          <div class="card-header">
+            <h3>&#127991; Promoções</h3>
+            <button class="btn-sm primary">+ Nova Promoção</button>
+          </div>
+          <table>
+            <thead><tr><th>Título</th><th>Tipo</th><th>Valor/Desconto</th><th>Vigência</th><th>Usos</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>Black November 20%</strong></td><td>Percentual</td><td>20% OFF</td><td>Até 30/11</td><td>45/100</td><td><span class="status-badge active"><span class="dot"></span>Ativa</span></td><td><button class="action-btn">Editar</button></td></tr>
+              <tr><td><strong>Happy Hour 15%</strong></td><td>Percentual</td><td>15% OFF</td><td>Seg-Sex 17h-20h</td><td>12/50</td><td><span class="status-badge active"><span class="dot"></span>Ativa</span></td><td><button class="action-btn">Editar</button></td></tr>
+              <tr><td><strong>Frete Grátis acima de R$ 50</strong></td><td>Frete Grátis</td><td>R$ 0,00</td><td>Válido</td><td>8/30</td><td><span class="status-badge active"><span class="dot"></span>Ativa</span></td><td><button class="action-btn">Editar</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== CLIENTES ===== -->
+      <div class="page-section" id="page-clientes">
+        <div class="card">
+          <div class="card-header">
+            <h3>&#128101; Clientes</h3>
+            <div><input type="text" placeholder="&#128269; Buscar cliente..." style="padding:8px 14px;border:1px solid var(--border);border-radius:8px;font-size:13px;outline:none;"></div>
+          </div>
+          <table>
+            <thead><tr><th>Nome</th><th>Telefone</th><th>Pedidos</th><th>Total Gasto</th><th>Último Pedido</th><th></th></tr></thead>
+            <tbody>
+              <tr><td><strong>João Silva</strong></td><td>(11) 98888-7777</td><td>12</td><td>R$ 487,50</td><td>Hoje</td><td><button class="action-btn">&#128196;</button></td></tr>
+              <tr><td><strong>Maria Costa</strong></td><td>(11) 97777-6666</td><td>8</td><td>R$ 342,20</td><td>Hoje</td><td><button class="action-btn">&#128196;</button></td></tr>
+              <tr><td><strong>Pedro Santos</strong></td><td>(11) 96666-5555</td><td>23</td><td>R$ 892,70</td><td>Hoje</td><td><button class="action-btn">&#128196;</button></td></tr>
+              <tr><td><strong>Ana Lima</strong></td><td>(11) 95555-4444</td><td>5</td><td>R$ 198,50</td><td>Ontem</td><td><button class="action-btn">&#128196;</button></td></tr>
+              <tr><td><strong>Carlos Alves</strong></td><td>(11) 94444-3333</td><td>15</td><td>R$ 623,40</td><td>Ontem</td><td><button class="action-btn">&#128196;</button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== CONFIGURAÇÕES ===== -->
+      <div class="page-section" id="page-configuracoes">
+        <div class="card" style="padding:24px;">
+          <div class="settings-section">
+            <h4>&#127912; Identidade Visual</h4>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Nome da Loja</label>
+                <input type="text" value="Big Espetos">
+              </div>
+              <div class="form-group">
+                <label>Slug (URL)</label>
+                <input type="text" value="bigespetos">
+              </div>
+              <div class="form-group">
+                <label>Logo (URL)</label>
+                <input type="text" placeholder="https://..." value="https://i.imgur.com/bigespetos-logo.png">
+              </div>
+              <div class="form-group">
+                <label>Favicon (URL)</label>
+                <input type="text" placeholder="https://..." value="https://i.imgur.com/favicon.ico">
+              </div>
+            </div>
+            <div class="color-inputs" style="margin-top:12px;">
+              <div class="color-item"><input type="color" value="#8b4516"><span>Cor Principal</span></div>
+              <div class="color-item"><input type="color" value="#1a1a1a"><span>Cor Secundária</span></div>
+              <div class="color-item"><input type="color" value="#8b4516"><span>Cor Botões</span></div>
+              <div class="color-item"><input type="color" value:#fff;"><span>Fundo</span></div>
+              <div class="color-item"><input type="color" value="#1a1a1a"><span>Texto</span></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>&#128222; Contato & Redes</h4>
+            <div class="form-grid">
+              <div class="form-group"><label>Telefone</label><input type="text" value="(11) 98888-7777"></div>
+              <div class="form-group"><label>WhatsApp</label><input type="text" value="(11) 98888-7777"></div>
+              <div class="form-group"><label>Instagram</label><input type="text" value="@bigespetos"></div>
+              <div class="form-group"><label>Facebook</label><input type="text" value="BigEspetosOficial"></div>
+              <div class="form-group"><label>TikTok</label><input type="text" value="@bigespetos"></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>&#127968; Endereço & Horários</h4>
+            <div class="form-grid">
+              <div class="form-group"><label>Endereço</label><input type="text" value="Rua das Flores, 150 - Centro, São Paulo"></div>
+              <div class="form-group"><label>CEP</label><input type="text" value="01001-000"></div>
+              <div class="form-group"><label>Horário Seg-Sex</label><input type="text" value="17:00 - 23:00"></div>
+              <div class="form-group"><label>Horário Sáb</label><input type="text" value="16:00 - 23:00"></div>
+              <div class="form-group"><label>Horário Dom</label><input type="text" value="17:00 - 21:00"></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>&#128176; Financeiro</h4>
+            <div class="form-row">
+              <div class="form-group"><label>Taxa de Entrega (R$)</label><input type="text" value="5,90"></div>
+              <div class="form-group"><label>Pedido Mínimo (R$)</label><input type="text" value="25,00"></div>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h4>&#128270; SEO & Analytics</h4>
+            <div class="form-grid">
+              <div class="form-group"><label>Meta Description</label><textarea rows="2">Big Espetos - Desde 2015, os melhores espetos da cidade. Pedidos rápidos e entregas para toda São Paulo.</textarea></div>
+              <div class="form-group"><label>Keywords</label><input type="text" value="espeto, lanche, delivery, food service, big espetos, comida paulista"></div>
+              <div class="form-group"><label>Google Analytics ID</label><input type="text" placeholder="G-XXXXXXXXXX"></div>
+              <div class="form-group"><label>Facebook Pixel ID</label><input type="text" placeholder="1234567890"></div>
+            </div>
+          </div>
+
+          <div style="text-align:right;padding-top:20px;border-top:1px solid var(--border);">
+            <button class="btn-sm primary" style="padding:10px 28px;font-size:14px;" onclick="alert('Configurações salvas com sucesso!')">&#128190; Salvar Configurações</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NOTIFICATION POPUP -->
+  <div class="notification-popup" id="notifPopup">
+    <span class="notif-icon">&#128276;</span>
+    <div class="notif-text">
+      <h4>Novo Pedido Recebido!</h4>
+      <p>#1025 - Cliente novo - R$ 45,50</p>
+    </div>
+    <button class="notif-close" onclick="closeNotif()">&times;</button>
+  </div>
+
+  <script>
+    // ===== SWITCH PAGES =====
+    function switchPage(page, el) {
+      document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+      document.getElementById(`page-${page}`).classList.add('active');
+      if (el) el.classList.add('active');
+      const titles = {
+        dashboard: 'Dashboard',
+        pedidos: 'Pedidos',
+        produtos: 'Produtos',
+        categorias: 'Categorias',
+        promocoes: 'Promoções',
+        clientes: 'Clientes',
+        configuracoes: 'Configurações'
+      };
+      document.getElementById('pageTitle').textContent = titles[page] || 'Dashboard';
+    }
+
+    // ===== PRODUCT MODAL =====
+    function openProductModal() {
+      document.getElementById('productModal').style.display = 'flex';
+    }
+    function closeProductModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+    window.onclick = function(event) {
+      const modal = document.getElementById('productModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    };
+
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Produto salvo com sucesso!');
+      closeProductModal();
+    });
+
+    // ===== SALES CHART =====
+    (function() {
+      const data = [45, 38, 52, 41, 47, 39, 55];
+      const labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+      const container = document.getElementById('salesChart');
+      const max = Math.max(...data);
+      container.innerHTML = data.map((v, i) => `
+        <div style="height:${(v/max)*100}%;background:var(--primary);" title="${labels[i]}: ${v} pedidos">
+          <span style="font-size:10px;color:#fff;padding:2px;">${labels[i]}</span>
+        </div>
+      `).join('');
+    })();
+
+    // ===== NOTIFICATION SOUND + POPUP =====
+    let notifTimeout;
+
+    function showNotif() {
+      const popup = document.getElementById('notifPopup');
+      popup.classList.add('show');
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        osc.frequency.setValueAtTime(1000, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } catch(e) {}
+      clearTimeout(notifTimeout);
+      notifTimeout = setTimeout(closeNotif, 5000);
+    }
+
+    function closeNotif() {
+      document.getElementById('notifPopup').classList.remove('show');
+    }
+
+    // Simulate a new order notification after 15 seconds
+    setTimeout(showNotif, 15000);
+
+    // ===== BAR ANIMATION ON SCROLL =====
+    const chartObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const bars = entry.target.querySelectorAll('.bar');
+          bars.forEach(bar => {
+            const h = bar.style.height;
+            bar.style.height = '0';
+            setTimeout(() => { bar.style.height = h; }, 150);
+          });
+        }
+      });
+    }, { threshold: 0.2 });
+
+    document.querySelectorAll('.chart-card').forEach(el => chartObserver.observe(el));
+  </script>
+</body>
+</html>
