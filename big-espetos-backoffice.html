@@ -10,12 +10,17 @@
   
   <!-- Cloudinary SDK -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cloudinary/2.0.0/cloudinary-index.min.js"></script>
-  
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.min.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.min.js"></script>
   <script>
+    // Cloudinary fica disponível globalmente assim que o SDK carrega
+    // Verificar se window.cloudinary existe após o script carregar
+    setTimeout(() => {
+      if (window.cloudinary) {
+        console.log('☁️ Cloudinary SDK carregado com sucesso!');
+      } else {
+        console.warn('⚠️ Cloudinary SDK carregado, mas window.cloudinary ainda não definido');
+      }
+    }, 100);
+    
     // Configurar Cloudinary após o DOM carregar
     document.addEventListener('DOMContentLoaded', () => {
       // Cloudinary URL da sua conta
@@ -25,21 +30,25 @@
       const urlParams = new URLSearchParams(cloudinaryUrl.replace('cloudinary://', ''));
       const [apiKey, apiSecret, cloudName] = cloudinaryUrl.replace('cloudinary://', '').split(':');
       
-      // Configurar Cloudinary
-      cloudinary.config({ 
-        cloud_name: cloudName || 'k3ron81p',
-        api_key: apiKey || '867785661492271',
-        api_secret: apiSecret || 'GAFi2d1lTyT8T9qN2qN6IYJQ7K8',
-        cloudinary_url: "upload.php"
-      });
-      
-      // Tornar o cloudinary disponível globalmente para uso nos handlers
-      window.cloudinary = cloudinary;
-      
-      // Log de confirmação
-      console.log('☁️ Cloudinary configurado com sucesso!');
+      // Configurar Cloudinary (apenas se window.cloudinary existir)
+      if (window.cloudinary) {
+        window.cloudinary.config({ 
+          cloud_name: cloudName || 'k3ron81p',
+          api_key: apiKey || '867785661492271',
+          api_secret: apiSecret || 'GAFi2d1lTyT8T9qN2qN6IYJQ7K8',
+          cloudinary_url: "upload.php"
+        });
+        console.log('⚙️ Cloudinary configurado via DOMContentLoaded');
+      } else {
+        console.error('❌ Cloudinary não disponível para configuração');
+      }
     });
   </script>
+  
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.min.js"></script>
   <style>
     :root {
       --primary: #8b4513;
@@ -769,6 +778,37 @@
       // Inicializar Cloudinary (já configurado no head via DOMContentLoaded)
       // O window.cloudinary já está disponível graças ao script no head
       
+      // ===== FUNÇÃO SHOWSECTION PARA NAVEGAÇÃO RESPONSIVA =====
+      window.showSection = function(sectionId) {
+        // Esconder TODAS as sections
+        var sections = document.querySelectorAll('section');
+        sections.forEach(function(s) {
+          s.style.display = 'none';
+        });
+        
+        // Mostrar a section selecionada
+        var target = document.getElementById(sectionId);
+        if (target) {
+          target.style.display = 'block';
+        }
+        
+        // Atualizar o link ativo no menu (funciona em mobile e desktop)
+        var links = document.querySelectorAll('.sidebar-nav a');
+        links.forEach(function(a) {
+          a.classList.remove('active');
+          if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(sectionId)) {
+            a.classList.add('active');
+          }
+        });
+      };
+      
+      // Ao carregar, esconder todas as sections inicialmente (serão mostradas via onclick)
+      document.addEventListener('DOMContentLoaded', function() {
+        var sections = document.querySelectorAll('section');
+        sections.forEach(function(s) {
+          s.style.display = 'none';
+        });
+      });
     </script>
     
     <!-- Funções Cloudinary -->
